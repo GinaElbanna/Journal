@@ -18,12 +18,12 @@ h1{
 .container {
     height: 100%;
     display: flex;
+
 }
-/* 
+
 canvas{
     background-color: grey;
-    width: 500px;
-} */
+}
 
 #toolbar {
     display: flex;
