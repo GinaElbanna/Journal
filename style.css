@@ -1,54 +1,63 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
-    color: pink;
-    }
-
-h1{
-    background: #7f7fd5;
-    background: -webkit-linear-gradient(to right, #91eae4, #86abe7, #7f7fd5);
-    background: linear-gradient(to right, #91eae4, #86abe7, #7f7fd5);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.container {
-    height: 100%;
     display: flex;
-
+    color: pink;
+    font-family: sans-serif;
 }
 
-canvas{
-    background-color: grey;
-}
-
+/* Toolbar on the left, fixed and full height */
 #toolbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 5px;
-    width: 70px;
+    padding: 10px;
+    width: 80px;
     background-color: #202020;
+    z-index: 1;
 }
 
-#toolbar *{
+#toolbar * {
     margin-bottom: 6px;
 }
 
-#toolbar label{
+#toolbar label {
     font-size: 12px;
+    color: white;
 }
 
-#toolbar input{
+#toolbar input {
     width: 100%;
 }
 
-#toolbar button{
+#toolbar button {
     background-color: #1565c0;
     border: none;
     border-radius: 4px;
     color: white;
-    padding: 2px;
+    padding: 4px;
+}
+
+/* Center the canvas */
+.page {
+    margin-left: 80px; /* offset for toolbar */
+    width: calc(100vw - 80px);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+}
+
+/* Canvas styling */
+canvas {
+    background-color: grey;
+    width: 400px;
+    height: 500px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }

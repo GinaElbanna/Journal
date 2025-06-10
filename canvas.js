@@ -2,11 +2,12 @@ const canvas = document.getElementById('page');
 const toolbar = document.getElementById('toolbar');
 const ctx = canvas.getContext('2d');
 
+const getCanvasOffset = () => canvas.getBoundingClientRect();
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+canvas.width = 400;
+canvas.height = 500;
 
 let isPainting = false;
 let lineWidth = 5;
@@ -31,22 +32,23 @@ toolbar.addEventListener('change', e =>{
 });
 
 const draw = (e) => {
-    if(!isPainting) {
-        return;
-    }
+    if (!isPainting) return;
+
+    const { left, top } = getCanvasOffset();
 
     ctx.lineWidth = lineWidth;
     ctx.lineCap = 'round';
-
-    ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
+    ctx.lineTo(e.clientX - left, e.clientY - top);
     ctx.stroke();
-}
-
+};
 
 canvas.addEventListener('mousedown', (e) => {
     isPainting = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    const { left, top } = getCanvasOffset();
+    startX = e.clientX - left;
+    startY = e.clientY - top;
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
 });
 
 canvas.addEventListener('mouseup', e => {
@@ -56,3 +58,13 @@ canvas.addEventListener('mouseup', e => {
 });
 
 canvas.addEventListener('mousemove', draw);
+
+
+
+document.getElementById('imageUpload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    img.src = URL.createObjectURL(file);
+});
+
