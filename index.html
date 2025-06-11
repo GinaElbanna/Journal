@@ -5,10 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="flipbook.css">
     <title>Journal</title>
 </head>
 
 <body>
+    <div class="flipbook">
+        <!-- front cover -->
+        <div class="hard">My Art Gallery <small>~ Mar</small></div>
+        <div class="hard"></div>
+        <!-- pages -->
+        <div>
+            <small>Let's look at some amazing art</small>
+            <small>Gotta catch em all</small>
+        </div>
+        <div>           
+            <canvas class="canvas-page"></canvas>
+        </div>
+        <div>           
+            <canvas class="canvas-page"></canvas>
+        </div>
+        <div>           
+            <canvas class="canvas-page"></canvas>
+        </div>
+        <!-- back cover -->
+        <div class="hard"></div>
+        <div class="hard">Thank You <small>~ Mar</small></div>
+    </div>
+
     <section class="container">
         <div id="toolbar">
             <h1>Draw</h1>
@@ -20,10 +44,15 @@
             <button id="clear">Clear</button>
         </div>
     </section>
-            <div class="page">
-            <canvas id="page"></canvas>
-        </div>
+
+
+    <script src="jquery.js"></script>
+    <script src="turn.js"></script>
+    <script>
+        $(".flipbook").turn();
+    </script>
     <script src="canvas.js"></script>
+
 </body>
 </html>
 

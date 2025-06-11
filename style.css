@@ -44,20 +44,20 @@ body {
 }
 
 /* Center the canvas */
-.page {
-    margin-left: 80px; /* offset for toolbar */
+/* .page {
+    margin-left: 80px;
     width: calc(100vw - 80px);
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
-}
+} */
 
 /* Canvas styling */
-canvas {
+/* canvas {
     background-color: grey;
     width: 400px;
     height: 500px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
+} */
