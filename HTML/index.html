@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="flipbook.css">
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/flipbook.css">
     <title>Journal</title>
+    <script src="../firebase.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
             <small>Gotta catch em all</small>
         </div>
         <div>           
-            <canvas class="canvas-page"></canvas>
+            <canvas id="drawingCanvas" class="canvas-page"></canvas>
         </div>
         <div>           
             <canvas class="canvas-page"></canvas>
@@ -43,15 +44,25 @@
             <input type="file" id="imageUpload">
             <button id="clear">Clear</button>
         </div>
+        
+        <label for="brush">Brush</label>
+        <select id="brush">
+            <option value="pencil">Pencil</option>
+            <option value="circle">Circle</option>
+            <option value="spray">Spray</option>
+            <option value="pattern">Pattern</option>
+        </select>
+
     </section>
 
 
-    <script src="jquery.js"></script>
-    <script src="turn.js"></script>
+    <script src="../JS/jquery.js"></script>
+    <script src="../JS/turn.js"></script>
     <script>
         $(".flipbook").turn();
     </script>
-    <script src="canvas.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="../JS/canvas.js"></script>
 
 </body>
 </html>
