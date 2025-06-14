@@ -4,24 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/reset.css">
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/flipbook.css">
     <title>Journal</title>
     <script src="JS/firebase.js"></script>
 </head>
 
 <body>
+    <header class="header-main">
+
+    </header>
+    <div class="image"></div>
     <div class="flipbook">
         <!-- front cover -->
-        <div class="hard">My Art Gallery <small>~ Mar</small></div>
+        <div class="hard">Journal <small>~</small></div>
         <div class="hard"></div>
         <!-- pages -->
         <div>
-            <small>Let's look at some amazing art</small>
-            <small>Gotta catch em all</small>
+            <small>This Journal Belongs To:</small>
+            <small><input type="text" style="align-items: center;"></small>
         </div>
         <div>           
             <canvas id="drawingCanvas" class="canvas-page"></canvas>
+        </div>
+        <div>           
+            <canvas class="canvas-page"></canvas>
+        </div>
+        <div>           
+            <canvas class="canvas-page"></canvas>
         </div>
         <div>           
             <canvas class="canvas-page"></canvas>
@@ -37,21 +47,27 @@
     <section class="container">
         <div id="toolbar">
             <h1>Draw</h1>
+            <button id="draw">Brush</button>
+            <button id="erase">Eraser</button>
+
             <label for="stroke">Stroke</label>
             <input id="stroke" name='stroke' type="color">
             <label for="lineWidth">Line Width</label>
-            <input id="lineWidth" name='lineWidth' type="number" value="5">
+            <input id="lineWidth" name='lineWidth' type="number" value="2">
             <input type="file" id="imageUpload">
-            <button id="clear">Clear</button>
+            <button id="clear" class="toolbar-btn">Clear</button>
+            
+        <button id="save" class="toolbar-btn">Save as PNG</button>
+
+        <button id="drawing-mode" class="btn btn-info">Enter Read Mode</button>
         </div>
-        
-        <label for="brush">Brush</label>
+        <!-- <label for="brush">Brush</label>
         <select id="brush">
             <option value="pencil">Pencil</option>
             <option value="circle">Circle</option>
             <option value="spray">Spray</option>
             <option value="pattern">Pattern</option>
-        </select>
+        </select> -->
 
     </section>
 
@@ -61,7 +77,6 @@
     <script>
         $(".flipbook").turn();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script src="JS/canvas.js"></script>
 
 </body>

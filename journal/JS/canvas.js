@@ -1,83 +1,125 @@
 const canvases = document.querySelectorAll('canvas');
-const fabricCanvases = [];
-let activeFabricCanvas = null;
 const toolbar = document.getElementById('toolbar');
+const drawingModeButton = document.getElementById('drawing-mode');
+const imageUploadInput = document.getElementById('imageUpload');
 
-// Set up Fabric.js on all canvases
+let activeCanvas = null;
+let activeContext = null;
+let isPainting = false;
+let isErasing = false;
+let isDrawingMode = true;
+
+let lineWidth = parseInt(document.getElementById('lineWidth').value, 10) || 2;
+let strokeColor = document.getElementById('stroke').value || '#000000';
+
+// Upload image to flipbook canvas (used on load)
+imageUploadInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file || !activeCanvas) return;
+
+    const img = new Image();
+    img.onload = () => {
+        const ctx = activeCanvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, activeCanvas.width, activeCanvas.height);
+    };
+    img.src = URL.createObjectURL(file);
+});
+
+
+// Set up all canvases
 canvases.forEach((canvas) => {
-    const fabricCanvas = new fabric.Canvas(canvas);
-    fabricCanvas.setWidth(400);
-    fabricCanvas.setHeight(500);
-    fabricCanvas.isDrawingMode = true;
-    fabricCanvas.freeDrawingBrush.width = 5;
-    fabricCanvas.freeDrawingBrush.color = '#000000';
+    canvas.width = 400;
+    canvas.height = 500;
+    const ctx = canvas.getContext('2d');
 
-    // Add click listener to track active canvas
-    fabricCanvas.on('mouse:down', () => {
-        setActiveCanvas(fabricCanvas, canvas);
+    // Set initial active canvas
+    if (!activeCanvas) {
+        activeCanvas = canvas;
+        activeContext = ctx;
+        canvas.classList.add('active-canvas');
+    }
+
+    // Select active canvas
+    canvas.addEventListener('mousedown', () => {
+        canvases.forEach(c => c.classList.remove('active-canvas'));
+        canvas.classList.add('active-canvas');
+        activeCanvas = canvas;
+        activeContext = ctx;
     });
 
-    fabricCanvases.push(fabricCanvas);
+    // Start drawing
+    canvas.addEventListener('mousedown', (e) => {
+        if (!isDrawingMode) return;
+        isPainting = true;
+        const rect = canvas.getBoundingClientRect();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    // Draw
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isPainting || !isDrawingMode) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = isErasing ? 'rgba(0,0,0,1)' : strokeColor;
+        ctx.globalCompositeOperation = isErasing ? 'destination-out' : 'source-over';
+        ctx.stroke();
+    });
+
+    // Stop drawing
+    canvas.addEventListener('mouseup', () => {
+        isPainting = false;
+        ctx.beginPath();
+        ctx.globalCompositeOperation = 'source-over';
+    });
+
 });
 
-// Set the active canvas and update visuals
-function setActiveCanvas(fabricCanvas, domCanvas) {
-    activeFabricCanvas = fabricCanvas;
-
-    // Remove active border from all canvases
-    canvases.forEach(c => c.classList.remove('active-canvas'));
-
-    // Add border to selected one
-    domCanvas.classList.add('active-canvas');
-}
-
-// Change brush color or size
+// Toolbar change handlers
 toolbar.addEventListener('change', (e) => {
-    if (!activeFabricCanvas) return;
-
     if (e.target.id === 'stroke') {
-        activeFabricCanvas.freeDrawingBrush.color = e.target.value;
+        strokeColor = e.target.value;
     }
-
     if (e.target.id === 'lineWidth') {
-        activeFabricCanvas.freeDrawingBrush.width = parseInt(e.target.value, 10);
+        lineWidth = parseInt(e.target.value, 10);
     }
 });
 
-// Clear button: only clear the active canvas
+// Toolbar click handlers
 toolbar.addEventListener('click', (e) => {
-    if (e.target.id === 'clear') {
-        if (activeFabricCanvas) {
-            activeFabricCanvas.clear();
-            activeFabricCanvas.isDrawingMode = true;
-        }
+    if (!activeContext) return;
+
+    switch (e.target.id) {
+        case 'clear':
+            activeContext.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+            break;
+        case 'draw':
+            isErasing = false;
+            break;
+        case 'erase':
+            isErasing = true;
+            break;
+        case 'save':
+            const dataURL = activeCanvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'canvas-export.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            break;
+            
     }
 });
 
-// Upload image to the active canvas
-document.getElementById('imageUpload').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file || !activeFabricCanvas) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function (f) {
-        const dataUrl = f.target.result;
-
-        fabric.Image.fromURL(dataUrl, function (img) {
-            img.set({
-                left: 100,
-                top: 100,
-                scaleX: 0.5,
-                scaleY: 0.5,
-                selectable: true
-            });
-
-            activeFabricCanvas.add(img);
-            activeFabricCanvas.setActiveObject(img);
-            activeFabricCanvas.renderAll();
-        });
-    };
-
-    reader.readAsDataURL(file);
+// Read/write mode toggle
+drawingModeButton.addEventListener('click', () => {
+    isDrawingMode = !isDrawingMode;
+    drawingModeButton.textContent = isDrawingMode ? 'Enter Read Mode' : 'Enter Write Mode';
 });
+
+
+

@@ -1,12 +1,26 @@
+
+
+
 body {
+    color: #ff0000;
     margin: 0;
     padding: 0;
     height: 100vh;
     overflow: hidden;
-    display: flex;
-    color: pink;
     font-family: sans-serif;
+
 }
+
+.image{
+
+    
+    background-position: center;
+    background-image: url(../images/image.png);
+    background-repeat: no-repeat ;
+    z-index: -1;
+
+}
+
 
 /* Toolbar on the left, fixed and full height */
 #toolbar {
@@ -36,28 +50,58 @@ body {
 }
 
 #toolbar button {
-    background-color: #1565c0;
+    background-color: #6e0707;
     border: none;
     border-radius: 4px;
     color: white;
     padding: 4px;
 }
 
-/* Center the canvas */
-/* .page {
-    margin-left: 80px;
-    width: calc(100vw - 80px);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f0f0;
-} */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Times New Roman', Times, serif;
+}
 
-/* Canvas styling */
-/* canvas {
-    background-color: grey;
-    width: 400px;
-    height: 500px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-} */
+body{
+    display: grid;
+    place-content: center;
+}
+
+
+.flipbook {
+    width: 55vw;
+    height: 70vh;
+}
+
+.flipbook .hard{
+    background: #c0392b !important;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+}
+
+.flipbook .hard small{
+    font-style: italic;
+    font-weight: lighter;
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+.flipbook .page{
+    background: rgb(201, 199, 199);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.11);
+}
+
+
+.flipbook .page small{
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
