@@ -8,6 +8,7 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: sans-serif;
+    overflow: auto; /* allow scrolling instead of shrinking */
 
 }
 
@@ -71,8 +72,13 @@ body{
 
 
 .flipbook {
-    width: 55vw;
-    height: 70vh;
+    .flipbook {
+    width: 800px; /* or whatever size you want */
+    height: 600px;
+    min-width: 800px;
+    min-height: 600px;
+}
+
 }
 
 .flipbook .hard{
@@ -108,5 +114,8 @@ body{
   width: 40px;
   cursor: grab;
   margin-bottom: 4px;
+}
+.canvas-page {
+  touch-action: none;
 }
 
