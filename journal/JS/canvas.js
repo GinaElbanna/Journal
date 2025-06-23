@@ -20,14 +20,15 @@ function setupCanvas(canvas) {
     canvas.height = 500;
     const ctx = canvas.getContext('2d');
 
+    // Activate and draw on mousedown (desktop)
     canvas.addEventListener('mousedown', (e) => {
-        console.log('draggedSticker:', draggedSticker?.src);
+        if (!isDrawingMode || draggedSticker) return;
+
         document.querySelectorAll('canvas').forEach(c => c.classList.remove('active-canvas'));
         canvas.classList.add('active-canvas');
         activeCanvas = canvas;
         activeContext = ctx;
 
-        if (!isDrawingMode || draggedSticker) return;
         isPainting = true;
         const rect = canvas.getBoundingClientRect();
         ctx.beginPath();
@@ -35,7 +36,7 @@ function setupCanvas(canvas) {
     });
 
     canvas.addEventListener('mousemove', (e) => {
-        if (!isPainting || !isDrawingMode) return;
+        if (!isPainting || !isDrawingMode || activeCanvas !== canvas) return;
         const rect = canvas.getBoundingClientRect();
         ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
         ctx.lineWidth = lineWidth;
@@ -51,9 +52,15 @@ function setupCanvas(canvas) {
         ctx.globalCompositeOperation = 'source-over';
     });
 
-    // Touch drawing
+    // Activate and draw on touchstart (mobile/tablet)
     canvas.addEventListener('touchstart', (e) => {
         if (!isDrawingMode || draggedSticker) return;
+
+        document.querySelectorAll('canvas').forEach(c => c.classList.remove('active-canvas'));
+        canvas.classList.add('active-canvas');
+        activeCanvas = canvas;
+        activeContext = canvas.getContext('2d');
+
         isPainting = true;
         const touch = e.touches[0];
         const rect = canvas.getBoundingClientRect();
@@ -63,7 +70,7 @@ function setupCanvas(canvas) {
     });
 
     canvas.addEventListener('touchmove', (e) => {
-        if (!isPainting || !isDrawingMode) return;
+        if (!isPainting || !isDrawingMode || activeCanvas !== canvas) return;
         const touch = e.touches[0];
         const rect = canvas.getBoundingClientRect();
         activeContext.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
@@ -77,17 +84,11 @@ function setupCanvas(canvas) {
 
     canvas.addEventListener('touchend', (e) => {
         isPainting = false;
-        activeContext.beginPath();
-        activeContext.globalCompositeOperation = 'source-over';
+        if (activeContext) {
+            activeContext.beginPath();
+            activeContext.globalCompositeOperation = 'source-over';
+        }
         e.preventDefault();
-    });
-
-    // Allow user to click/tap to activate canvas
-    canvas.addEventListener("click", () => {
-        document.querySelectorAll("canvas").forEach(c => c.classList.remove("active-canvas"));
-        canvas.classList.add("active-canvas");
-        activeCanvas = canvas;
-        activeContext = canvas.getContext("2d");
     });
 
     // Sticker drop
@@ -125,16 +126,12 @@ imageUploadInput.addEventListener('change', (e) => {
     img.src = URL.createObjectURL(file);
 });
 
-// Initialize all canvases
-document.querySelectorAll('canvas').forEach(setupCanvas);
-
-// Toolbar change handlers
+// Toolbar controls
 toolbar.addEventListener('change', (e) => {
     if (e.target.id === 'stroke') strokeColor = e.target.value;
     if (e.target.id === 'lineWidth') lineWidth = parseInt(e.target.value, 10);
 });
 
-// Toolbar buttons
 toolbar.addEventListener('click', (e) => {
     if (!activeContext) return;
     switch (e.target.id) {
@@ -160,7 +157,7 @@ toolbar.addEventListener('click', (e) => {
     }
 });
 
-// Toggle drawing mode
+// Drawing mode toggle
 drawingModeButton.addEventListener('click', () => {
     isDrawingMode = !isDrawingMode;
     drawingModeButton.textContent = isDrawingMode ? 'Enter Read Mode' : 'Enter Write Mode';
@@ -169,18 +166,14 @@ drawingModeButton.addEventListener('click', () => {
 // Sticker drag tracking
 let draggedSticker = null;
 document.querySelectorAll('.sticker-thumb').forEach(sticker => {
-    sticker.addEventListener('dragstart', () => {
-        draggedSticker = sticker;
-    });
-    sticker.addEventListener('dragend', () => {
-        draggedSticker = null;
-    });
+    sticker.addEventListener('dragstart', () => draggedSticker = sticker);
+    sticker.addEventListener('dragend', () => draggedSticker = null);
 });
 document.addEventListener('mouseup', () => {
     draggedSticker = null;
 });
 
-// Flipbook page change handling
+// Flipbook page setup
 document.addEventListener('DOMContentLoaded', () => {
     const $flipbook = $(".flipbook");
 
@@ -189,20 +182,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return setTimeout(bindFlipbookTurnEvent, 50);
         }
 
-        $flipbook.bind("turned", function (event, page) {
-            const view = $flipbook.turn("view");
-            const canvases = document.querySelectorAll("canvas");
-            const leftPage = view[0];
-
-            if (leftPage && canvases[leftPage - 1]) {
-                canvases.forEach(c => c.classList.remove("active-canvas"));
-                const targetCanvas = canvases[leftPage - 1];
-                targetCanvas.classList.add("active-canvas");
-                activeCanvas = targetCanvas;
-                activeContext = targetCanvas.getContext("2d");
-            }
+        $flipbook.bind("turned", function () {
+            setTimeout(() => {
+                document.querySelectorAll('canvas').forEach(setupCanvas);
+            }, 100); // Give the flipbook time to render new pages
         });
     }
 
     bindFlipbookTurnEvent();
+
+    // Initialize canvases on load
+    document.querySelectorAll('canvas').forEach(setupCanvas);
 });
