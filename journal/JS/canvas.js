@@ -183,10 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         $flipbook.bind("turned", function () {
+        requestAnimationFrame(() => {
             setTimeout(() => {
                 document.querySelectorAll('canvas').forEach(setupCanvas);
-            }, 100); // Give the flipbook time to render new pages
+            }, 300);
         });
+    });
     }
 
     bindFlipbookTurnEvent();
