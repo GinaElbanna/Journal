@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="CSS/reset.css">
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <title>Journal</title>
     <script src="JS/firebase.js"></script>
 </head>
@@ -27,7 +27,7 @@
             <small><input type="text" style="align-items: center;"></small>
         </div>
         <div>           
-            <canvas id="drawingCanvas" class="canvas-page"></canvas>
+            <canvas class="canvas-page"></canvas>
         </div>
         <div>           
             <canvas class="canvas-page"></canvas>
@@ -61,8 +61,8 @@
     <section class="container">
         <div id="toolbar">
             <h1>Draw</h1>
-            <button id="draw">Brush</button>
-            <button id="erase">Eraser</button>
+            <button id="draw"><i class='bx bxs-brush'></i></button>
+            <button id="erase"><i class='bx bxs-eraser'></i></button>
 
             
             <label for="stroke">Stroke</label>
