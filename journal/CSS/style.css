@@ -106,6 +106,10 @@ body {
   cursor: grab;
   margin-bottom: 4px;
 }
+#sticker-picker{
+    background-color: rgb(200, 0, 0,0.42);
+}
+
 .canvas-page {
     background: url(../images/journalPaper.png);
     background-repeat: no-repeat;
