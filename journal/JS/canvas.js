@@ -7,7 +7,7 @@ let activeCanvas = null;
 let activeContext = null;
 let isPainting = false;
 let isErasing = false;
-let isDrawingMode = true;
+let isDrawingMode = false;
 
 let lineWidth = parseInt(document.getElementById('lineWidth').value, 10) || 2;
 let strokeColor = document.getElementById('stroke').value || '#000000';
@@ -121,7 +121,7 @@ imageUploadInput.addEventListener('change', (e) => {
     const img = new Image();
     img.onload = () => {
         const ctx = activeCanvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, activeCanvas.width, activeCanvas.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height);
     };
     img.src = URL.createObjectURL(file);
 });
@@ -161,7 +161,17 @@ toolbar.addEventListener('click', (e) => {
 drawingModeButton.addEventListener('click', () => {
     isDrawingMode = !isDrawingMode;
     drawingModeButton.textContent = isDrawingMode ? 'Enter Read Mode' : 'Enter Write Mode';
+
+    const $flipbook = $(".flipbook");
+    if (isDrawingMode) {
+        $flipbook.turn("disable", true);
+        $flipbook.addClass("turnjs-disabled");
+    } else {
+        $flipbook.turn("disable", false);
+        $flipbook.removeClass("turnjs-disabled");
+    }
 });
+
 
 // Sticker drag tracking
 let draggedSticker = null;
@@ -177,22 +187,22 @@ document.addEventListener('mouseup', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const $flipbook = $(".flipbook");
 
-    function bindFlipbookTurnEvent() {
-        if (!$flipbook.data('turn')) {
-            return setTimeout(bindFlipbookTurnEvent, 50);
+    $flipbook.turn(); // <-- MOVE THIS HERE, so it's before you bind the event
+
+    $flipbook.on("turning", function (e) {
+        if (isDrawingMode) {
+            e.preventDefault();
+            alert("You must exit Drawing Mode before turning the page.");
         }
-
-        $flipbook.bind("turned", function () {
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                document.querySelectorAll('canvas').forEach(setupCanvas);
-            }, 300);
-        });
     });
-    }
 
-    bindFlipbookTurnEvent();
+    $flipbook.on("turned", function () {
+        document.querySelectorAll('canvas').forEach(setupCanvas);
+    });
+
+
 
     // Initialize canvases on load
     document.querySelectorAll('canvas').forEach(setupCanvas);
 });
+

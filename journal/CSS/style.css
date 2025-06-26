@@ -14,7 +14,6 @@ body {
     background-image: url(../images/image.png);
     background-repeat: no-repeat ;
     z-index: -1;
-
 }
 
 /* Toolbar on the left, fixed and full height */
@@ -29,6 +28,7 @@ body {
     width: 110px;
     background-color: #202020;
     z-index: 1;
+    overflow: scroll;
 }
 
 #toolbar * {
@@ -65,12 +65,17 @@ body {
 }
 
 .flipbook {
-    .flipbook {
+   .flipbook {
     width: 800px;
     height: 600px;
     min-width: 800px;
     min-height: 600px;
-    }
+    max-width: 800px;
+    max-height: 600px;
+    margin: auto;
+    position: relative;
+}
+
 }
 
 .flipbook .hard{
@@ -89,8 +94,6 @@ body {
 
 .flipbook .page{
     background: rgb(201, 199, 199);
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -101,20 +104,28 @@ body {
     font-size: 14px;
     margin-bottom: 10px;
 }
+
+#sticker-picker{
+    background-color: rgb(200, 0, 0,0.42);
+    justify-content: center;
+    display: grid;
+}
+
 #sticker-picker img {
   width: 40px;
   cursor: grab;
   margin-bottom: 4px;
-}
-#sticker-picker{
-    background-color: rgb(200, 0, 0,0.42);
 }
 
 .canvas-page {
     background: url(../images/journalPaper.png);
     background-repeat: no-repeat;
     background-position: 50%;
-    background-position-y: 60%;
-    background-size: 85%;
+    background-position-y: 20%;
+    background-size: 100%;
     touch-action: none;
+}
+
+.flipbook.turnjs-disabled .page {
+    cursor: default !important;
 }
