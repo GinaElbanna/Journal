@@ -121,8 +121,8 @@ body {
     background: url(../images/journalPaper.png);
     background-repeat: no-repeat;
     background-position: 50%;
-    background-position-y: 20%;
-    background-size: 100%;
+    background-position-y: 50%;
+    background-size: 90%;
     touch-action: none;
 }
 
