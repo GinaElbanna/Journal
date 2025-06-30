@@ -12,6 +12,18 @@ let isDrawingMode = false;
 let lineWidth = parseInt(document.getElementById('lineWidth').value, 10) || 2;
 let strokeColor = document.getElementById('stroke').value || '#000000';
 
+// image manipulation stuff
+let uploadedImage = null;
+let imageX = 100;
+let imageY = 100;
+let imageScale = 1;
+let imageAngle = 0;
+
+let isDraggingImage = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+
 function setupCanvas(canvas) {
     if (canvas.dataset.initialized) return;
     canvas.dataset.initialized = 'true';
@@ -90,6 +102,39 @@ function setupCanvas(canvas) {
         }
         e.preventDefault();
     });
+    // Image drag handling
+    canvas.addEventListener('mousedown', (e) => {
+        if (!uploadedImage || draggedSticker) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const imgW = uploadedImage.width * imageScale;
+        const imgH = uploadedImage.height * imageScale;
+
+        if (
+            x >= imageX && x <= imageX + imgW &&
+            y >= imageY && y <= imageY + imgH
+        ) {
+            isDraggingImage = true;
+            dragOffsetX = x - imageX;
+            dragOffsetY = y - imageY;
+        }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isDraggingImage || !uploadedImage) return;
+
+        const rect = canvas.getBoundingClientRect();
+        imageX = e.clientX - rect.left - dragOffsetX;
+        imageY = e.clientY - rect.top - dragOffsetY;
+        drawCanvasWithImage(activeContext);
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isDraggingImage = false;
+    });
 
     // Sticker drop
     canvas.addEventListener('dragover', (e) => e.preventDefault());
@@ -114,17 +159,44 @@ function setupCanvas(canvas) {
     }
 }
 
+function drawCanvasWithImage(ctx) {
+    ctx.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+
+    if (uploadedImage) {
+        const centerX = imageX + (uploadedImage.width * imageScale) / 2;
+        const centerY = imageY + (uploadedImage.height * imageScale) / 2;
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(imageAngle * Math.PI / 180);
+        ctx.drawImage(
+            uploadedImage,
+            -uploadedImage.width * imageScale / 2,
+            -uploadedImage.height * imageScale / 2,
+            uploadedImage.width * imageScale,
+            uploadedImage.height * imageScale
+        );
+        ctx.restore();
+    }
+}
+
 // Image upload
 imageUploadInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file || !activeCanvas) return;
+
     const img = new Image();
     img.onload = () => {
-        const ctx = activeCanvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        uploadedImage = img;
+        imageX = 100;
+        imageY = 100;
+        imageScale = 1;
+        imageAngle = 0;
+        drawCanvasWithImage(activeContext);
     };
     img.src = URL.createObjectURL(file);
 });
+
 
 // Toolbar controls
 toolbar.addEventListener('change', (e) => {
@@ -206,3 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('canvas').forEach(setupCanvas);
 });
 
+document.getElementById('scaleSlider').addEventListener('input', (e) => {
+    imageScale = parseFloat(e.target.value);
+    drawCanvasWithImage(activeContext);
+});
+
+document.getElementById('rotateSlider').addEventListener('input', (e) => {
+    imageAngle = parseFloat(e.target.value);
+    drawCanvasWithImage(activeContext);
+});

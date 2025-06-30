@@ -29,6 +29,7 @@ body {
     background-color: #202020;
     z-index: 1;
     overflow: scroll;
+    overflow-x: hidden;
 }
 
 #toolbar * {
@@ -109,8 +110,15 @@ body {
     background-color: rgb(200, 0, 0,0.42);
     justify-content: center;
     display: grid;
-}
+    margin-bottom: 70px;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
 
+}
+#sticker-picker::-webkit-scrollbar { 
+    display: none;  /* Older Safari and Chromium */
+}
 #sticker-picker img {
   width: 40px;
   cursor: grab;
