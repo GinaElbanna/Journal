@@ -17,7 +17,7 @@ body {
 }
 
 /* Toolbar on the left, fixed and full height */
-#toolbar {
+#left-toolbar {
     position: fixed;
     left: 0;
     top: 0;
@@ -32,20 +32,20 @@ body {
     overflow-x: hidden;
 }
 
-#toolbar * {
+#left-toolbar * {
     margin-bottom: 6px;
 }
 
-#toolbar label {
+#left-toolbar label {
     font-size: 12px;
     color: white;
 }
 
-#toolbar input {
+#left-toolbar input {
     width: 100%;
 }
 
-#toolbar button {
+#left-toolbar button {
     display: flex;
     background-color: #6e0707;
     border: none;

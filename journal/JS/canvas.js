@@ -1,5 +1,5 @@
 const canvases = document.querySelectorAll('canvas');
-const toolbar = document.getElementById('toolbar');
+const toolbar = document.getElementById('left-toolbar');
 const drawingModeButton = document.getElementById('drawing-mode');
 const imageUploadInput = document.getElementById('imageUpload');
 
