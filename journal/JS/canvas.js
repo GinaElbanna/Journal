@@ -23,6 +23,9 @@ let isDraggingImage = false;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 
+//undo related stuff ig
+let restore_array = [];
+let index = -1;
 
 function setupCanvas(canvas) {
     if (canvas.dataset.initialized) return;
@@ -62,6 +65,12 @@ function setupCanvas(canvas) {
         isPainting = false;
         ctx.beginPath();
         ctx.globalCompositeOperation = 'source-over';
+
+        if ( event.type != 'mouseout' )  {
+            restore_array.push(ctx.getImageData(0, 0, activeCanvas.width, activeCanvas.height));
+            index += 1;
+        }
+            console.log(restore_array);
     });
 
     // Activate and draw on touchstart (mobile/tablet)
@@ -180,6 +189,8 @@ function drawCanvasWithImage(ctx) {
     }
 }
 
+
+
 // Image upload
 imageUploadInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -209,6 +220,8 @@ toolbar.addEventListener('click', (e) => {
     switch (e.target.id) {
         case 'clear':
             activeContext.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+            restore_array = [];
+            index = -1;
             break;
         case 'draw':
             isErasing = false;
@@ -228,6 +241,21 @@ toolbar.addEventListener('click', (e) => {
             break;
     }
 });
+
+
+
+//undo
+document.getElementById('undo').addEventListener('click', () => {
+    if ( index <= 0 ) {
+       //activate clear case or otherwise call clear function if it existed
+    }else {
+        index -= 1;
+        restore_array.pop();
+        activeContext.putImageData(restore_array[index], 0, 0);
+    }
+});
+
+
 
 // Drawing mode toggle
 drawingModeButton.addEventListener('click', () => {

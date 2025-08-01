@@ -16,6 +16,12 @@ body {
     z-index: -1;
 }
 
+.btn{
+    width:fit-content;
+    background-color: #6e0707;
+    color: #fff;
+}
+
 /* Toolbar on the left, fixed and full height */
 #left-toolbar {
     position: fixed;
